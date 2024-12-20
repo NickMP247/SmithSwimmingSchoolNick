@@ -1,0 +1,42 @@
+﻿@model IEnumerable<SmithSwimmingSchool_NickMorales.Models.Enrollment>
+
+@{
+    ViewData["Title"] = "Nadadores en el Grupo";
+}
+
+<h1 class="text-center mb-4">Nadadores en el Grupo</h1>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-warning text-center">
+        No hay nadadores asignados a este grupo.
+        <br />
+        <a href="@Url.Action("GroupCourse", new { id = ViewBag.CourseID })" class="btn btn-primary mt-3">Volver a Grupos</a>
+    </div>
+}
+else
+{
+    <div class="container">
+        <div class="row justify-content-center">
+            @foreach (var swimmer in Model)
+            {
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="card-title mb-0">@swimmer.Swimmer.Name</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text"><strong>Teléfono: </strong>@swimmer.Swimmer.PhoneNumber</p>
+                            <p class="card-text"><strong>Email: </strong>@swimmer.Swimmer.Email</p>
+                            <p class="card-text"><strong>Género: </strong>@swimmer.Swimmer.Genre</p>
+                            <p class="card-text"><strong>Fecha de nacimiento: </strong>@swimmer.Swimmer.BirthDate?.ToShortDateString()</p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <a asp-action="CreateReport" asp-route-idEnrollment="@swimmer.EnrollmentID" class="btn btn-sm btn-outline-danger">Add report</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}

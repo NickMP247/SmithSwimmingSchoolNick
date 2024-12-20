@@ -1,0 +1,88 @@
+﻿@{
+    ViewData["Title"] = "Smith Swimming School";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .hero {
+            background: url('~/images/banner-image.jpg') no-repeat center center;
+            background-size: cover;
+            height: 60vh;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .facilities, .courses {
+            margin: 3rem 0;
+        }
+
+        .facility-img, .course-img {
+            height: 200px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <header class="hero">
+        <div class="container">
+            <h1 class="display-4">Smith Swimming School</h1>
+            <p class="lead">Where water comes to life and dreams come true!</p>
+            <a href="#courses" class="btn btn-primary btn-lg">Explore Our Courses</a>
+        </div>
+    </header>
+
+    <section class="facilities container">
+        <h2 class="text-center mb-4">Our Facilities</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <img src="~/images/main-pool.jpg" alt="Main Pool" class="img-fluid facility-img mb-3">
+                <h3 class="h5">Main Pool</h3>
+                <p>An Olympic-sized pool with state-of-the-art technology and temperature control for an optimal swimming experience.</p>
+            </div>
+            <div class="col-md-4">
+                <img src="~/images/training-room.jpg" alt="Training Room" class="img-fluid facility-img mb-3">
+                <h3 class="h5">Training Room</h3>
+                <p>Modern equipment and a motivating environment to strengthen your body and skills.</p>
+            </div>
+            <div class="col-md-4">
+                <img src="~/images/kids-pool.jpg" alt="Kids Pool" class="img-fluid facility-img mb-3">
+                <h3 class="h5">Kids Pool</h3>
+                <p>A safe and fun area designed specifically for the little ones, with dedicated instructors.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="courses container" id="courses">
+        <h2 class="text-center mb-4">Our Courses</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <img src="~/images/beginner-course.jpg" alt="Beginner Course" class="img-fluid course-img mb-3">
+                <h3 class="h5">Beginner Course</h3>
+                <p>Ideal for those just starting out in the world of swimming. Learn basic techniques in a safe environment.</p>
+                <a href="#courseDetails" class="btn btn-outline-primary">More Information</a>
+            </div>
+            <div class="col-md-4">
+                <img src="~/images/intermediate-course.jpg" alt="Intermediate Course" class="img-fluid course-img mb-3">
+                <h3 class="h5">Intermediate Course</h3>
+                <p>For swimmers looking to improve their technique and endurance. Advanced training with our experts.</p>
+                <a href="#courseDetails" class="btn btn-outline-primary">More Information</a>
+            </div>
+            <div class="col-md-4">
+                <img src="~/images/advanced-course.jpg" alt="Advanced Course" class="img-fluid course-img mb-3">
+                <h3 class="h5">Advanced Course</h3>
+                <p>Intensive training for advanced swimmers who want to compete or significantly improve their performance.</p>
+                <a href="#courseDetails" class="btn btn-outline-primary">More Information</a>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

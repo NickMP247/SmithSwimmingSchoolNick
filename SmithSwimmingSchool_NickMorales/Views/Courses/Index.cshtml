@@ -1,0 +1,40 @@
+﻿@model IEnumerable<SmithSwimmingSchool_NickMorales.Models.Course>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="text-center mb-4">Courses</h1>
+
+<p class="text-center">
+    <a asp-action="Create" class="btn btn-primary">Create New Course</a>
+</p>
+
+<div class="container">
+    <div class="row justify-content-center">
+        @foreach (var item in Model)
+        {
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">@Html.DisplayFor(modelItem => item.Title)</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text"><strong>Coach:</strong> @Html.DisplayFor(modelItem => item.Coach.Name)</p>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between">
+                        @if (User.IsInRole("Administrator"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.CourseID" class="btn btn-sm btn-outline-primary">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@item.CourseID" class="btn btn-sm btn-outline-danger">Delete</a>
+                        }
+                        else
+                        {
+                            <a asp-action="EnrollSwimmer" asp-route-id="@item.CourseID" class="btn btn-sm btn-dark">Enrollment</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

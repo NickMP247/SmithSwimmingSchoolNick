@@ -1,0 +1,41 @@
+﻿@model IEnumerable<SmithSwimmingSchool_NickMorales.Models.Group>
+
+@{
+    ViewData["Title"] = "Grupos del Curso";
+}
+
+<h1 class="text-center mb-4">Grupos del Curso</h1>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-warning text-center">
+        No hay grupos asignados a este curso.
+        <br />
+        <a href="@Url.Action("Index", "Home")" class="btn btn-primary mt-3">Volver a la página principal</a>
+    </div>
+}
+else
+{
+    <div class="container">
+        <div class="row justify-content-center">
+            @foreach (var group in Model)
+            {
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="card-title mb-0">Grupo: @group.Level</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text"><strong>Fecha de inicio: </strong>@group.StartDate.ToShortDateString()</p>
+                            <p class="card-text"><strong>Fecha de fin: </strong>@group.EndDate.ToShortDateString()</p>
+                            <p class="card-text"><strong>Swimmers: </strong>@ViewBag.GroupSwimmerCounts[group.GroupID]</p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <a asp-action="SwimmersGroups" asp-route-id="@group.GroupID" class="btn btn-sm btn-outline-danger">View Swimmers</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}

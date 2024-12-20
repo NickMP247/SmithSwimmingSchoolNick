@@ -1,0 +1,49 @@
+﻿@model IEnumerable<SmithSwimmingSchool_NickMorales.Models.Enrollment>
+
+@{
+    ViewData["Title"] = "Mis Cursos";
+}
+
+<h1 class="text-center mb-4">Mis Cursos</h1>
+
+@if (ViewData["WarningMessage"] != null)
+{
+    <div class="alert alert-warning text-center">
+        @ViewData["WarningMessage"]
+        <br />
+        <a href="@Url.Action("Index", "Home")" class="btn btn-primary mt-3">Volver a la página principal</a>
+    </div>
+}
+else
+{
+    <div class="container">
+        <div class="row justify-content-center">
+            @foreach (var enrollment in Model)
+            {
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="card-title mb-0">@enrollment.Course.Title</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text"><strong>Coach: </strong>@enrollment.Course.Coach.Name</p>
+                            @if (enrollment.Group == null)
+                            {
+                                <p class="card-text">El administrador debe asignarte a un grupo para empezar las clases.</p>
+                            }
+                            else
+                            {
+                                <p class="card-text"><strong>Grupo: </strong> @enrollment.Group.Level </p>
+                                <p class="card-text"><strong>Fecha de inicio: </strong>@enrollment.Group.StartDate </p>
+                                <p class="card-text"><strong>Fecha de fin: </strong>@enrollment.Group.EndDate</p>
+                            }
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <a asp-action="ViewReports" asp-route-id="@enrollment.EnrollmentID" class="btn btn-sm btn-outline-warning">View report</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
