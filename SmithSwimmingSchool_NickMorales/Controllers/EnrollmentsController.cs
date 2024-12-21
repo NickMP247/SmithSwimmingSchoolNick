@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using SmithSwimmingSchool_NickMorales.Models;
 
 namespace SmithSwimmingSchool_NickMorales.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     public class EnrollmentsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -50,9 +52,9 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
         // GET: Enrollments/Create
         public IActionResult Create()
         {
-            ViewData["CourseID"] = new SelectList(_context.Courses, "CourseID", "CourseID");
-            ViewData["GroupID"] = new SelectList(_context.Groups, "GroupID", "GroupID");
-            ViewData["SwimmerID"] = new SelectList(_context.Swimmers, "SwimmerID", "SwimmerID");
+            ViewData["CourseID"] = new SelectList(_context.Courses, "CourseID", "Title");
+            ViewData["GroupID"] = new SelectList(_context.Groups, "GroupID", "Level");
+            ViewData["SwimmerID"] = new SelectList(_context.Swimmers, "SwimmerID", "Name");
             return View();
         }
 
@@ -88,9 +90,9 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
             {
                 return NotFound();
             }
-            ViewData["CourseID"] = new SelectList(_context.Courses, "CourseID", "CourseID", enrollment.CourseID);
-            ViewData["GroupID"] = new SelectList(_context.Groups, "GroupID", "GroupID", enrollment.GroupID);
-            ViewData["SwimmerID"] = new SelectList(_context.Swimmers, "SwimmerID", "SwimmerID", enrollment.SwimmerID);
+            ViewData["CourseID"] = new SelectList(_context.Courses, "CourseID", "Title", enrollment.CourseID);
+            ViewData["GroupID"] = new SelectList(_context.Groups, "GroupID", "Level", enrollment.GroupID);
+            ViewData["SwimmerID"] = new SelectList(_context.Swimmers, "SwimmerID", "Name", enrollment.SwimmerID);
             return View(enrollment);
         }
 

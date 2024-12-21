@@ -21,12 +21,14 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
         }
 
         // GET: Swimmers
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Swimmers.ToListAsync());
         }
 
         // GET: Swimmers/Details/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -45,7 +47,8 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
         }
 
         // GET: Swimmers/Create
-     public IActionResult Create()
+        [Authorize(Roles = "Administrator")]
+        public IActionResult Create()
     {
         ViewBag.Genres = new SelectList(Enum.GetValues(typeof(Genre)));
         return View();
@@ -54,7 +57,8 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
     // POST: Swimmers/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("SwimmerID,Name,PhoneNumber,Email,Genre,BirthDate")] Swimmer swimmer)
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> Create([Bind("SwimmerID,Name,PhoneNumber,Email,Genre,BirthDate")] Swimmer swimmer)
     {
         if (ModelState.IsValid)
         {
@@ -66,8 +70,9 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
         return View(swimmer);
     }
 
-    // GET: Swimmers/Edit/5
-    public async Task<IActionResult> Edit(int? id)
+        // GET: Swimmers/Edit/5
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -79,6 +84,7 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
             {
                 return NotFound();
             }
+            ViewBag.Genres = new SelectList(Enum.GetValues(typeof(Genre)));
             return View(swimmer);
         }
 
@@ -87,6 +93,7 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int id, [Bind("SwimmerID,Name,PhoneNumber,Email,Genre,BirthDate")] Swimmer swimmer)
         {
             if (id != swimmer.SwimmerID)
@@ -118,6 +125,7 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
         }
 
         // GET: Swimmers/Delete/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -138,6 +146,7 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
         // POST: Swimmers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var swimmer = await _context.Swimmers.FindAsync(id);
@@ -150,7 +159,7 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [Authorize(Roles = "Swimmer, Coach")]
+        [Authorize(Roles = "Swimmer")]
         public async Task<IActionResult> CoursesBySwimmer()
         {
             var currentUserId = User.Identity?.Name;
@@ -170,7 +179,7 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
 
                 return View(enrolledCourses);
         }
-
+        [Authorize(Roles = "Swimmer")]
         public async Task <IActionResult> ViewReports(int id)
         {
             var reports = await _context.Reports.Where(r=>r.EnrollmentID == id)

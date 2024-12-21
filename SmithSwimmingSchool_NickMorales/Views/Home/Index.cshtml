@@ -1,35 +1,12 @@
 ﻿@{
     ViewData["Title"] = "Smith Swimming School";
 }
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        .hero {
-            background: url('~/images/banner-image.jpg') no-repeat center center;
-            background-size: cover;
-            height: 60vh;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-
-        .facilities, .courses {
-            margin: 3rem 0;
-        }
-
-        .facility-img, .course-img {
-            height: 200px;
-            object-fit: cover;
-        }
-    </style>
 </head>
 <body>
     <header class="hero">
@@ -44,43 +21,112 @@
         <h2 class="text-center mb-4">Our Facilities</h2>
         <div class="row">
             <div class="col-md-4">
-                <img src="~/images/main-pool.jpg" alt="Main Pool" class="img-fluid facility-img mb-3">
-                <h3 class="h5">Main Pool</h3>
-                <p>An Olympic-sized pool with state-of-the-art technology and temperature control for an optimal swimming experience.</p>
+                <div class="card h-100 shadow-sm">
+                    <img src="~/images/mainpool.jpeg" alt="Main Pool" class="img-fluid facility-img mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Main Pool</h5>
+                        <p class="card-text">An Olympic-sized pool with state-of-the-art technology and temperature control for an optimal swimming experience.</p>
+                    </div>
+                </div>
             </div>
             <div class="col-md-4">
-                <img src="~/images/training-room.jpg" alt="Training Room" class="img-fluid facility-img mb-3">
-                <h3 class="h5">Training Room</h3>
-                <p>Modern equipment and a motivating environment to strengthen your body and skills.</p>
+                <div class="card h-100 shadow-sm">
+                    <img src="~/images/trainigroom.jpeg" alt="Training Room" class="img-fluid facility-img mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Training Room</h5>
+                        <p class="card-text">Modern equipment and a motivating environment to strengthen your body and skills.</p>
+                    </div>
+                </div>
             </div>
             <div class="col-md-4">
-                <img src="~/images/kids-pool.jpg" alt="Kids Pool" class="img-fluid facility-img mb-3">
-                <h3 class="h5">Kids Pool</h3>
-                <p>A safe and fun area designed specifically for the little ones, with dedicated instructors.</p>
+                <div class="card h-100 shadow-sm">
+                    <img src="~/images/kidpool.jpeg" alt="Kids Pool" class="img-fluid facility-img mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Kids Pool</h5>
+                        <p class="card-text">A safe and fun area designed specifically for the little ones, with dedicated instructors.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
-
     <section class="courses container" id="courses">
         <h2 class="text-center mb-4">Our Courses</h2>
         <div class="row">
+            <div class="col-md-3">
+                <div class="card h-100 shadow-sm">
+                    <img src="~/images/butterflystile.png" class="card-img-top img-fluid course-img mb-3" alt="Butterfly Stroke">
+                    <div class="card-body">
+                        <h5 class="card-title">Butterfly Stroke</h5>
+                        <p class="card-text">The butterfly stroke is a dynamic and powerful swimming style that requires strength and coordination.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 shadow-sm">
+                    <img src="~/images/freestyle.png" class="card-img-top img-fluid course-img mb-3" alt="Freestyle">
+                    <div class="card-body">
+                        <h5 class="card-title">Freestyle</h5>
+                        <p class="card-text">Freestyle is the fastest and most efficient swimming style, perfect for competitive swimmers.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 shadow-sm">
+                    <img src="~/images/natación de pecho.png" class="card-img-top img-fluid course-img mb-3" alt="Breaststroke">
+                    <div class="card-body">
+                        <h5 class="card-title">Breaststroke</h5>
+                        <p class="card-text">Breaststroke is a popular swimming style known for its unique frog-like kick and gliding motion.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 shadow-sm">
+                    <img src="~/images/natación sincronizada.png" class="card-img-top img-fluid course-img mb-3" alt="Synchronized Swimming">
+                    <div class="card-body">
+                        <h5 class="card-title">Synchronized Swimming</h5>
+                        <p class="card-text">Synchronized swimming combines swimming, dance, and gymnastics, performed in perfect harmony.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        @if (User.IsInRole("Administrator") || User.IsInRole("Swimmer") || !User.Identity.IsAuthenticated)
+        {
+            <div class="d-flex justify-content-center">
+                <a href="@Url.Action("Index", "Courses")" class="btn btn-warning btn-lg">See available courses</a>
+            </div>
+        }
+    </section>
+    <br />
+    <section class="offers container" id="offers">
+        <h2 class="text-center mb-4">Special Offers</h2>
+        <div class="row">
             <div class="col-md-4">
-                <img src="~/images/beginner-course.jpg" alt="Beginner Course" class="img-fluid course-img mb-3">
-                <h3 class="h5">Beginner Course</h3>
-                <p>Ideal for those just starting out in the world of swimming. Learn basic techniques in a safe environment.</p>
-                <a href="#courseDetails" class="btn btn-outline-primary">More Information</a>
+                <div class="card h-100 shadow-sm">
+                    <img src="~/images/senior.jpeg" alt="Senior Offer" class="img-fluid offer-img mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">For Seniors</h5>
+                        <p class="card-text">Special programs designed to help seniors stay active and healthy with tailored swimming classes.</p>
+                    </div>
+                </div>
             </div>
             <div class="col-md-4">
-                <img src="~/images/intermediate-course.jpg" alt="Intermediate Course" class="img-fluid course-img mb-3">
-                <h3 class="h5">Intermediate Course</h3>
-                <p>For swimmers looking to improve their technique and endurance. Advanced training with our experts.</p>
-                <a href="#courseDetails" class="btn btn-outline-primary">More Information</a>
+                <div class="card h-100 shadow-sm">
+                    <img src="~/images/Kid.jpeg" alt="Kids Offer" class="img-fluid offer-img mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">For Kids</h5>
+                        <p class="card-text">Fun and safe swimming classes specifically designed for kids with experienced instructors.</p>
+                    </div>
+                </div>
             </div>
             <div class="col-md-4">
-                <img src="~/images/advanced-course.jpg" alt="Advanced Course" class="img-fluid course-img mb-3">
-                <h3 class="h5">Advanced Course</h3>
-                <p>Intensive training for advanced swimmers who want to compete or significantly improve their performance.</p>
-                <a href="#courseDetails" class="btn btn-outline-primary">More Information</a>
+                <div class="card h-100 shadow-sm">
+                    <img src="~/images/adult.jpeg" alt="Adult Offer" class="img-fluid offer-img mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">For Adults</h5>
+                        <p class="card-text">Variety of swimming classes for adults, from beginners to advanced levels, aimed at fitness and wellness.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

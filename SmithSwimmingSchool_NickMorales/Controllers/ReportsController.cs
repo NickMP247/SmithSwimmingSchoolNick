@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using SmithSwimmingSchool_NickMorales.Models;
 
 namespace SmithSwimmingSchool_NickMorales.Controllers
 {
+    [Authorize(Roles ="Administrator")]
     public class ReportsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -23,7 +25,7 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
         public async Task<IActionResult> Index()
         {
             
-            var applicationDbContext = _context.Reports.Include(r => r.Enrollment);
+            var applicationDbContext = _context.Reports.Include(r => r.Enrollment).ThenInclude(r=>r.Swimmer);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -49,7 +51,16 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
         // GET: Reports/Create
         public IActionResult Create()
         {
-            ViewData["EnrollmentID"] = new SelectList(_context.Enrollments, "EnrollmentID", "EnrollmentID");
+            var enrollments = _context.Enrollments
+                .Include(e => e.Swimmer)  // Incluir los nadadores
+                .Select(e => new
+                {
+                    EnrollmentID = e.EnrollmentID,
+                    SwimmerName = e.Swimmer != null ? e.Swimmer.Name : "Sin nadador"
+                })
+                .ToList();
+
+            ViewData["EnrollmentID"] = new SelectList(enrollments, "EnrollmentID", "SwimmerName");
             return View();
         }
 
@@ -66,7 +77,17 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EnrollmentID"] = new SelectList(_context.Enrollments, "EnrollmentID", "EnrollmentID", report.EnrollmentID);
+
+            var enrollments = _context.Enrollments
+                .Include(e => e.Swimmer)
+                .Select(e => new
+                {
+                    EnrollmentID = e.EnrollmentID,
+                    SwimmerName = e.Swimmer != null ? e.Swimmer.Name : "Sin nadador"
+                })
+                .ToList();
+
+            ViewData["EnrollmentID"] = new SelectList(enrollments, "EnrollmentID", "SwimmerName", report.EnrollmentID);
             return View(report);
         }
 
@@ -83,9 +104,20 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
             {
                 return NotFound();
             }
-            ViewData["EnrollmentID"] = new SelectList(_context.Enrollments, "EnrollmentID", "EnrollmentID", report.EnrollmentID);
+
+            var enrollments = _context.Enrollments
+                .Include(e => e.Swimmer)  // Cargar el nadador asociado
+                .Select(e => new
+                {
+                    EnrollmentID = e.EnrollmentID,
+                    SwimmerName = e.Swimmer != null ? e.Swimmer.Name : "Sin nadador"
+                })
+                .ToList();
+
+            ViewData["EnrollmentID"] = new SelectList(enrollments, "EnrollmentID", "SwimmerName", report.EnrollmentID);
             return View(report);
         }
+
 
         // POST: Reports/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -119,9 +151,21 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EnrollmentID"] = new SelectList(_context.Enrollments, "EnrollmentID", "EnrollmentID", report.EnrollmentID);
+
+            // Si hay un error, recargar la lista de nadadores para el desplegable
+            var enrollments = _context.Enrollments
+                .Include(e => e.Swimmer)
+                .Select(e => new
+                {
+                    EnrollmentID = e.EnrollmentID,
+                    SwimmerName = e.Swimmer != null ? e.Swimmer.Name : "Sin nadador"
+                })
+                .ToList();
+
+            ViewData["EnrollmentID"] = new SelectList(enrollments, "EnrollmentID", "SwimmerName", report.EnrollmentID);
             return View(report);
         }
+
 
         // GET: Reports/Delete/5
         public async Task<IActionResult> Delete(int? id)

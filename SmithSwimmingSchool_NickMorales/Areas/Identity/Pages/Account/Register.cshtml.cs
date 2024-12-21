@@ -18,6 +18,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using SmithSwimmingSchool_NickMorales.Data;
+using SmithSwimmingSchool_NickMorales.Models;
 
 namespace SmithSwimmingSchool_NickMorales.Areas.Identity.Pages.Account
 {
@@ -97,6 +99,28 @@ namespace SmithSwimmingSchool_NickMorales.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            //Añadimos los datos del swimmer
+            [Required]
+            [StringLength(50, ErrorMessage = "The swimmer name must has between 3 letters and 50 letters")]
+            [Display(Name ="Swimmer Name")]
+
+            public string Swimmer {  get; set; }
+
+            [Required]
+            [Display(Name ="Swimmer genre")]
+            public Genre Genre { get; set; }
+
+            [Required]
+            [Display(Name ="Birth Date")]
+            [DataType(DataType.Date)]
+
+            public DateTime BirthDate { get; set; }
+
+            [Required]
+            [Display(Name = "Phone number")]
+
+            public string PhoneNumber { get; set; }
         }
 
 
@@ -120,6 +144,26 @@ namespace SmithSwimmingSchool_NickMorales.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
+                    //Añadimos al usuario nuevo el rol de swimmer y lo metemos en la tabla
+                    await _userManager.AddToRoleAsync(user, "Swimmer");
+
+                    //Guardamos al usuario en la tabla de swimmer 
+                    var swimmer = new Swimmer
+                    {
+                        Name = Input.Swimmer,
+                        PhoneNumber = Input.PhoneNumber,
+                        BirthDate = DateTime.Now,
+                        Email = user.Email,
+                        Genre = Genre.Male
+                    };
+
+                    using (var scope = HttpContext.RequestServices.CreateScope())
+                    {
+                        var dbContex = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                        dbContex.Swimmers.Add(swimmer);
+                        await dbContex.SaveChangesAsync();  
+                    }
+
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);

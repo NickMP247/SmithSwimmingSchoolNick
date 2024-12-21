@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using SmithSwimmingSchool_NickMorales.Models;
 
 namespace SmithSwimmingSchool_NickMorales.Controllers
 {
+    [Authorize(Roles ="Administrator")]
     public class GroupsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -80,6 +82,7 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
             {
                 return NotFound();
             }
+            ViewBag.Level = new SelectList(Enum.GetValues(typeof(Level)));
             return View(@group);
         }
 

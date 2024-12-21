@@ -1,17 +1,17 @@
 ﻿@model SmithSwimmingSchool_NickMorales.Models.Report
 @{
-    ViewData["Title"] = "Crear Reporte";
+    ViewData["Title"] = "Create Report";
 }
 
-<h1 class="text-center mb-4">Crear Reporte para @ViewData["SwimmerName"]</h1>
+<h1 class="text-center mb-4">Create Report for @ViewData["SwimmerName"]</h1>
 
 <form asp-action="CreateReport" method="post">
     <div class="form-group">
-        <label asp-for="Description" class="control-label"/>
+        <label asp-for="Description" class="control-label"></label>
         <input asp-for="Description" class="form-control" />
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
-    <input type="hidden" asp-for="@ViewData["EnrollmentID"]"/>
+    <input type="hidden" name="enrollmentID" value="@ViewData["EnrollmentID"]" />
     <br />
     <button type="submit" class="btn btn-primary">Submit Report</button>
 </form>

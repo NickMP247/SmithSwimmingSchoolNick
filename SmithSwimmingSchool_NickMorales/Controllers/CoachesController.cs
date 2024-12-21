@@ -22,12 +22,14 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
         }
 
         // GET: Coaches
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Coachs.ToListAsync());
         }
 
         // GET: Coaches/Details/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,6 +48,7 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
         }
 
         // GET: Coaches/Create
+        [Authorize(Roles = "Administrator")]
         public IActionResult Create()
         {
             return View();
@@ -56,6 +59,7 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Create([Bind("CoachID,Name,PhoneNumber,Email")] Coach coach)
         {
             if (ModelState.IsValid)
@@ -67,12 +71,26 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
             return View(coach);
         }
 
-        // GET: Coaches/Edit/5
+        [Authorize(Roles = "Administrator, Coach")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                // Obtener el CoachID del usuario logueado si es un Coach
+                if (User.IsInRole("Coach"))
+                {
+                    var currentUserId = User.Identity?.Name;
+                    var coachs = await _context.Coachs.FirstOrDefaultAsync(c => c.Email == currentUserId);
+                    if (coachs == null)
+                    {
+                        return NotFound();
+                    }
+                    id = coachs.CoachID;
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
 
             var coach = await _context.Coachs.FindAsync(id);
@@ -80,14 +98,19 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
             {
                 return NotFound();
             }
+
+            // Verificar si el usuario es un Coach y si está editando sus propios datos
+            if (User.IsInRole("Coach") && User.Identity.Name != coach.Email)
+            {
+                return Forbid();
+            }
+
             return View(coach);
         }
 
-        // POST: Coaches/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator, Coach")]
         public async Task<IActionResult> Edit(int id, [Bind("CoachID,Name,PhoneNumber,Email")] Coach coach)
         {
             if (id != coach.CoachID)
@@ -101,6 +124,16 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
                 {
                     _context.Update(coach);
                     await _context.SaveChangesAsync();
+
+                    // Redirigir según el rol del usuario
+                    if (User.IsInRole("Administrator"))
+                    {
+                        return RedirectToAction("Index", "Coaches");
+                    }
+                    else if (User.IsInRole("Coach"))
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -113,12 +146,14 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
+
             return View(coach);
         }
 
+
         // GET: Coaches/Delete/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -139,6 +174,7 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
         // POST: Coaches/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var coach = await _context.Coachs.FindAsync(id);
@@ -150,7 +186,7 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
+        [Authorize(Roles = "Coach")]
         public async Task <IActionResult> CoachCourses()
         {
             var currentId = User.Identity?.Name;
@@ -166,6 +202,7 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
 
             return View(courses);
         }
+        [Authorize(Roles = "Coach")]
         public async Task<IActionResult> GroupCourse(int? id)
         {
             var groups = await _context.Groups
@@ -185,6 +222,7 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
         }
 
         //Sacamos los nadadores de un grupo
+        [Authorize(Roles = "Coach")]
         public async Task<IActionResult> SwimmersGroups(int id)
         {
             var enrollments = await _context.Enrollments
@@ -195,28 +233,52 @@ namespace SmithSwimmingSchool_NickMorales.Controllers
             return View(enrollments);
         }
 
-
+        [Authorize(Roles = "Coach")]
         public async Task<IActionResult> CreateReport(int idEnrollment)
         {
-            var enrollment = await _context.Enrollments.Include(e => e.Swimmer).FirstOrDefaultAsync(e => e.EnrollmentID == idEnrollment); if (enrollment == null) { return NotFound(); }
+            var enrollment = await _context.Enrollments
+                .Include(e => e.Swimmer)
+                .FirstOrDefaultAsync(e => e.EnrollmentID == idEnrollment);
+
+            if (enrollment == null)
+            {
+                return NotFound();
+            }
+
             ViewData["EnrollmentID"] = idEnrollment;
-            ViewData["SwimmerName"] = enrollment.Swimmer.Name; 
+            ViewData["SwimmerName"] = enrollment.Swimmer.Name;
+
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateReport(int idEnrollment, string description)
+        [Authorize(Roles = "Coach")]
+        public async Task<IActionResult> CreateReport(int enrollmentID, string description)
         {
             if (ModelState.IsValid)
             {
-                var report = new Report { Description = description, EnrollmentID = idEnrollment }; 
-                _context.Reports.Add(report); 
-                await _context.SaveChangesAsync(); 
-                return RedirectToAction("Index");
-            } 
-            ViewData["EnrollmentID"] = idEnrollment; 
-            return View(); 
+                var report = new Report
+                {
+                    Description = description,
+                    EnrollmentID = enrollmentID
+                };
+
+                _context.Reports.Add(report);
+                await _context.SaveChangesAsync();
+
+                // Redirigir a la vista de nadadores en el grupo
+                var groupID = _context.Enrollments
+                    .Where(e => e.EnrollmentID == enrollmentID)
+                    .Select(e => e.GroupID)
+                    .FirstOrDefault();
+
+                return RedirectToAction("SwimmersGroups", new { id = groupID });
+            }
+
+            ViewData["EnrollmentID"] = enrollmentID;
+            return View();
         }
+
         private bool CoachExists(int id)
         {
             return _context.Coachs.Any(e => e.CoachID == id);

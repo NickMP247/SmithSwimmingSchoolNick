@@ -27,6 +27,33 @@
                 <label asp-for="Input.ConfirmPassword">Confirm Password</label>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
+            
+
+            <div class="mb-3">
+                <input asp-for="Input.Swimmer" class="form-control" placeholder="Name" aria-required="true" />
+                <label asp-for="Input.Swimmer" class="form-label" />
+                <span asp-validation-for="Input.Swimmer" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Input.Genre" class="form-label" />
+                <select asp-for="Input.Genre" class="form-control" asp-items="ViewBag.Genres">
+                    <option value="" selected disabled>Select Genre</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                </select>
+                <span asp-validation-for="Input.Genre" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <input asp-for="Input.BirthDate" type="date" class="form-control" />
+                <label asp-for="Input.BirthDate"  class="form-label" />
+                <span asp-validation-for="Input.BirthDate" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Phone" aria-required="true" />
+                <label asp-for="Input.PhoneNumber" class="form-label" />
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </form>
     </div>
